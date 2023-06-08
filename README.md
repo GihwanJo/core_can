@@ -34,6 +34,8 @@ This topic is subscribed to by the node. It expects to have data published to it
 
 This is the Kvaser Hardware ID (serial number) of the connected device.
 
+<center><img src = "https://github.com/GihwanJo/core_can/assets/58166107/801cae5a-0f32-43b6-9285-9361c5f44e60" width = "50%" height = "50%"></center>  
+
 *~can_circuit_id*
 
 This is the 0-based index of the channel number *on the specific hardware device* designated by the *~can_hardware_id*.
