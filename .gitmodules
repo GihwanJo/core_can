@@ -1,0 +1,3 @@
+[submodule "kvaser_interface_CANFD"]
+	path = kvaser_interface_CANFD
+	url = git@github.com:GihwanJo/kvaser_interface_CANFD.git
