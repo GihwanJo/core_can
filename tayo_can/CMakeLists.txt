@@ -31,11 +31,11 @@ target_link_libraries(ros_${PROJECT_NAME}
   ${catkin_LIBRARIES}
 )
 
-add_executable(kvaser_can_bridge
+add_executable(tayo_can
   src/kvaser_can_bridge.cpp
 )
 
-target_link_libraries(kvaser_can_bridge
+target_link_libraries(tayo_can
   ros_${PROJECT_NAME}
   ${catkin_LIBRARIES}
 )
@@ -46,7 +46,7 @@ roslint_cpp()
 install(
   TARGETS
   ros_${PROJECT_NAME}
-  kvaser_can_bridge
+  tayo_can
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

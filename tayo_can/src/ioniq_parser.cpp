@@ -203,7 +203,10 @@ uint64_t IoniqCanParser::decodeFMcuTorque(const void* nbytes) {
     return data;
 }
 double IoniqCanParser::rawToPhysFMcuTorque(uint64_t value) {
-    return value * 0.125 + 0;
+    uint32_t tmp = value;
+    int32_t v =0;
+    v = v | tmp;
+    return v * 0.125 + 0;
 }
 uint64_t IoniqCanParser::decodeRMcuTorque(const void* nbytes) {
     uint64_t data;
@@ -217,7 +220,10 @@ uint64_t IoniqCanParser::decodeRMcuTorque(const void* nbytes) {
     return data;
 }
 double IoniqCanParser::rawToPhysRMcuTorque(uint64_t value) {
-    return value * 0.125 + 0;
+    uint32_t tmp = value;
+    int32_t v =0;
+    v = v | tmp;
+    return v * 0.125 + 0;
 }
 
 uint64_t IoniqCanParser::decodeModeAct(const void* nbytes) {
@@ -569,12 +575,17 @@ void IoniqCanParser::makeCmd(uint8_t* data) {
     for (int i = 0; i < 32; ++i) data[i] = 0;
 
     data[3] |= ioniq_cmd_.mode_act;
-    constexpr double brake_max = 100.0;
     constexpr double brake_min = 0.0;
+    constexpr double brake_max = 99.9;
     if (ioniq_cmd_.brk1 > brake_max) ioniq_cmd_.brk1 = brake_max;
     if (ioniq_cmd_.brk1 < brake_min) ioniq_cmd_.brk1 = brake_min;
-    uint8_t tmp = static_cast<uint8_t>(ioniq_cmd_.brk1 * 2.55);
+    uint8_t tmp = static_cast<uint8_t>(ioniq_cmd_.brk1 * 2.56);
     data[4] |= tmp;
+
+    constexpr double accel_min = 0.0;
+    constexpr double accel_max = 99.9;
+    if(ioniq_cmd_.acc_aps > accel_max) ioniq_cmd_.acc_aps = accel_max;
+    if(ioniq_cmd_.acc_aps < accel_min) ioniq_cmd_.acc_aps = accel_min;
 
     constexpr double acc_offset = 22.3875;
     constexpr double acc_factor = 1.0 / 0.2985;
@@ -787,8 +798,6 @@ void IoniqCanParser::parseData(const void* nbytes) {
         rawToPhysWheelVelocityRr(decodeWheelVelocityRr(nbytes));
     ioniq_status_.wheel_velocity_fl =
         rawToPhysWheelVelocityFl(decodeWheelVelocityFl(nbytes));
-    ioniq_status_.steering_angle =
-        rawToPhysSteeringAngle(decodeSteeringAngle(nbytes));
     ioniq_status_.steering_torque =
         rawToPhysSteeringTq(decodeSteeringTq(nbytes));
     ioniq_status_.accel_pedal_position =

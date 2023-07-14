@@ -140,7 +140,7 @@ void can_read()
             }
             can_pub_msg.header.stamp = ros::Time::now();
             can_rx_pub.publish(can_pub_msg);
-            if(can_pub_msg.id == 100){
+            if(can_pub_msg.id == 0x100){
               ioniq_parser.parseData(can_pub_msg.data.data());
               auto ioniq_status_msg =
                   ioniq_parser.toMsg(ioniq_parser.getStatus());
@@ -232,7 +232,7 @@ void ioniq_cmd_callabck(const vehicle_msgs::IoniqControlCommand::ConstPtr& msg){
   if (can_reader.isOpen())
   {
     can_msgs::Frame ros_msg;
-    ros_msg.id = 50;
+    ros_msg.id = 0x050;
     ros_msg.dlc = 32;
     ros_msg.is_extended = false;
     ros_msg.is_rtr = false;
@@ -244,21 +244,22 @@ void ioniq_cmd_callabck(const vehicle_msgs::IoniqControlCommand::ConstPtr& msg){
     uint8_t data[32];
     ioniq_parser.makeCmd(data);
 
-    CanMsg msg;
+    CanMsg msg_can;
 
-    msg.id = ros_msg.id;
-    msg.dlc = ros_msg.dlc;
-    msg.flags.ext_id = ros_msg.is_extended;
-    msg.flags.rtr = ros_msg.is_rtr;
+    msg_can.id = ros_msg.id;
+    msg_can.dlc = ros_msg.dlc;
+    msg_can.flags.ext_id = ros_msg.is_extended;
+    msg_can.flags.rtr = ros_msg.is_rtr;
+    msg_can.flags.fd_msg = true;
 
     auto msg_size = KvaserCanUtils::dlcToSize(ros_msg.dlc);
 
     for (size_t i = 0; i < msg_size; ++i)
     {
-      msg.data.push_back(data[i]);
+      msg_can.data.push_back(data[i]);
     }
 
-    ret = can_reader.write(std::move(msg));
+    ret = can_reader.write(std::move(msg_can));
 
     if (ret != ReturnStatuses::OK)
     {
